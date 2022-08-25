@@ -29,11 +29,11 @@ app.register(user, {prefix: '/api'})
 app.register(food, {prefix: '/api'})
 
 
-async function commitToDb (promise) {
-  const [error, data] = await app.to(promise)
-  if (error) return app.httpErrors.internalServerError(error.message)
-  return data
-}
+// async function commitToDb (promise) {
+//   const [error, data] = await app.to(promise)
+//   if (error) return app.httpErrors.internalServerError(error.message)
+//   return data
+// }
 
 const port = process.env.PORT
 app.listen({port}, (err, address) => {
