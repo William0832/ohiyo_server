@@ -8,7 +8,7 @@ const foodTypeData = [
   },
   {
     name: '飲料',
-    info: '主餐加點飲料 折抵＄10'
+    info: '飲料搭配主餐折抵 $10, 續杯半價 '
   },
   {
     name: '主餐加點'
@@ -17,17 +17,17 @@ const foodTypeData = [
 const foodData = [
   { 
     foodTypeId: 1,
-    name: '蔬食炒泡麵',
+    name: '有機蔬菜炒泡麵',
     price: 120,
-    info: '',
+    info: 'feat. 動福蛋',
   },
-   { 
+  { 
     foodTypeId: 1,
     name: '輕鬆肉香腸炒泡麵',
     price: 150,
-    info: '',
+    info: 'feat. 動福蛋',
   },
-   { 
+  { 
     foodTypeId: 2,
     name: '檸檬可樂',
     price: 40,
@@ -35,9 +35,21 @@ const foodData = [
   },
   { 
     foodTypeId: 2,
-    name: '薄荷椰子水',
+    name: '100% 椰子水',
     price: 60,
     info: '',
+  },
+  { 
+    foodTypeId: 2,
+    name: '浪人啤酒',
+    price: 60,
+    info: '',
+  },
+  { 
+    foodTypeId: 2,
+    name: '現打果汁',
+    price: 80,
+    info: '當季新鮮水果搭配動福鮮奶',
   },
   { 
     foodTypeId: 3,
@@ -49,6 +61,18 @@ const foodData = [
     foodTypeId: 3,
     name: '動福蛋',
     price: 20,
+    info: '',
+  },
+  { 
+    foodTypeId: 3,
+    name: '韓式泡菜',
+    price: 20,
+    info: '',
+  },
+  { 
+    foodTypeId: 3,
+    name: '輕鬆肉香腸',
+    price: 30,
     info: '',
   }
 ]
