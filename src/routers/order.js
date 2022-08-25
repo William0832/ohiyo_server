@@ -1,4 +1,6 @@
 import userDbService from '../services/user.js'
+import orderDbService from '../services/order.js'
+
 const _api = (api, opts, done) => {
    api.addHook('preHandler', async (req, res) => {
       //do something on api routes
@@ -19,15 +21,22 @@ const _api = (api, opts, done) => {
         if(customer == null || customer.lineId == null || cart ==null ) throw new Error(
           'Missing cart or customer data'
         )
-        console.log(cart, customer )
+        // user
         const { name: userName, lineId, phone } = customer
         const userData = { name: userName, lineId, phone }
         const user = 
           await userDbService.fetchUser(lineId) || 
-          await userDbService.createUser({data: userData})
+          await userDbService.createUser(userData)
+        // order
+        const orderData = {
+          ...cart, 
+          ownerId: user?.id,
+        }
+        const order = await orderDbService.createOrder(orderData)
+        if (order == null) throw new Error('create order fail')
         return { 
           success: true,
-          data: { order: {...cart, ...user, orderId: 12345} },
+          data: { order },
           message: 'create order success'
         }
       } catch(err) {
