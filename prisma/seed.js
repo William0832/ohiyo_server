@@ -2,63 +2,69 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const userData = [
+const foodTypeData = [
   {
-    name: 'Alice',
-    email: 'alice@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Join the Prisma Slack',
-          content: 'https://slack.prisma.io',
-          published: true,
-        },
-      ],
-    },
+    name: '主餐'
   },
   {
-    name: 'Nilu',
-    email: 'nilu@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Follow Prisma on Twitter',
-          content: 'https://www.twitter.com/prisma',
-          published: true,
-          viewCount: 42,
-        },
-      ],
-    },
+    name: '飲料',
+    info: '主餐加點飲料 折抵＄10'
   },
   {
-    name: 'Mahmoud',
-    email: 'mahmoud@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Ask a question about Prisma on GitHub',
-          content: 'https://www.github.com/prisma/prisma/discussions',
-          published: true,
-          viewCount: 128,
-        },
-        {
-          title: 'Prisma on YouTube',
-          content: 'https://pris.ly/youtube',
-        },
-      ],
-    },
+    name: '主餐加點'
   },
 ]
+const foodData = [
+  { 
+    foodTypeId: 1,
+    name: '蔬食炒泡麵',
+    price: 120,
+    info: '',
+  },
+   { 
+    foodTypeId: 1,
+    name: '輕鬆肉香腸炒泡麵',
+    price: 150,
+    info: '',
+  },
+   { 
+    foodTypeId: 2,
+    name: '檸檬可樂',
+    price: 40,
+    info: '',
+  },
+  { 
+    foodTypeId: 2,
+    name: '薄荷椰子水',
+    price: 60,
+    info: '',
+  },
+  { 
+    foodTypeId: 3,
+    name: '加麵',
+    price: 20,
+    info: '',
+  },
+  { 
+    foodTypeId: 3,
+    name: '動福蛋',
+    price: 20,
+    info: '',
+  }
+]
 
-async function main() {
+
+async function seedHandler ({data, tableName}) {
   console.log(`Start seeding ...`)
-  for (const u of userData) {
-    const user = await prisma.user.create({
-      data: u,
-    })
-    console.log(`Created user with id: ${user.id}`)
+  for (const e of data) {
+    const item = await prisma[tableName].create({ data: e })
+    console.log(`Created ${tableName} with id: ${item.id}`)
   }
   console.log(`Seeding finished.`)
+}
+async function main() {
+  await seedHandler({ data:foodTypeData, tableName: 'foodType' })
+  await seedHandler({ data:foodData, tableName: 'food' })
 }
 
 main()

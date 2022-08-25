@@ -8,20 +8,74 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  lineId    String
+  phone     String
+  orders    Order[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Order {
+  id         Int         @id @default(autoincrement())
+  totalPrice Int
+  status     String      @default("pendingPay") // pendingPay paied completed cancle
+  orderFoods OrderFood[]
+  owner      User?       @relation(fields: [ownerId], references: [id])
+  ownerId    Int?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  deletedAt  DateTime?
+}
+
+model OrderFood {
+  id           Int     @id @default(autoincrement())
+  food         Food    @relation(fields: [foodId], references: [id])
+  foodId       Int
+  special      String?
+  spicyLevel   String?
+  addItems     String?
+  amount       Int     @default(0)
+  discount     Int     @default(0)
+  addItemPrice Int     @default(0)
+  totalPrice   Int     @default(0) // amount * (food's price + addItemPrice) - discount
+  order        Order?  @relation(fields: [orderId], references: [id])
+  orderId      Int?
+}
+
+model FoodType {
+  id        Int       @id @default(autoincrement())
+  name      String
+  info      String?
+  foods     Food[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Food {
+  id         Int         @id @default(autoincrement())
+  foodType   FoodType    @relation(fields: [foodTypeId], references: [id])
+  foodTypeId Int
+  name       String
+  info       String?
+  price      Int
+  isSoldOut  Boolean     @default(false)
+  img        Img?        @relation(fields: [imgId], references: [id])
+  imgId      Int?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  deletedAt  DateTime?
+  OrderFood  OrderFood[]
+}
+
+model Img {
+  id        Int       @id @default(autoincrement())
+  path      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  Food      Food[]
 }
