@@ -36,19 +36,19 @@ model Admin {
 }
 
 model Schedule {
-  id              Int               @id @default(autoincrement())
-  name            String?
-  createdShop     Shop              @relation("Create", fields: [createdShopId], references: [id])
-  createdShopId   Int
-  activeShop      Shop?             @relation("Active", fields: [activeShopId], references: [id])
-  activeShopId    Int?              @unique
-  weekDayOpenTime WeekDayOpneTime[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  deletedAt       DateTime?
+  id               Int               @id @default(autoincrement())
+  name             String?
+  createdShop      Shop              @relation("Create", fields: [createdShopId], references: [id])
+  createdShopId    Int
+  activeShop       Shop?             @relation("Active", fields: [activeShopId], references: [id])
+  activeShopId     Int?              @unique
+  weekDayOpenTimes WeekDayOpenTime[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
 }
 
-model WeekDayOpneTime {
+model WeekDayOpenTime {
   id         Int       @id @default(autoincrement())
   weekDay    Int //0123456
   openTime   String

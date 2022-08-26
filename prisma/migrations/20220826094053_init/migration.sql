@@ -37,7 +37,7 @@ CREATE TABLE "Schedule" (
 );
 
 -- CreateTable
-CREATE TABLE "WeekDayOpneTime" (
+CREATE TABLE "WeekDayOpenTime" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "weekDay" INTEGER NOT NULL,
     "openTime" TEXT NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE "WeekDayOpneTime" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "deletedAt" DATETIME,
-    CONSTRAINT "WeekDayOpneTime_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "Schedule" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "WeekDayOpenTime_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "Schedule" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable

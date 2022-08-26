@@ -85,7 +85,7 @@ const shopData = {
     create: {
       name: 'schedule1', 
       activeShopId: 1,
-      weekDayOpenTime: {
+      weekDayOpenTimes: {
         create: [
           { weekDay: 6, openTime: '11:00-14:00' },
           { weekDay: 0, openTime: '11:00-14:00' }

@@ -3,17 +3,37 @@ const prisma = new PrismaClient()
 
 
 const fetchShop = async(id, includeFoods) => {
-  const ormSearchData = { where: { id }}
-  if (includeFoods) {
-    ormSearchData['include'] = {
-      foods: {
-        include: { foodType: { select: {
-          id: true,
+  const ormSearchData = { 
+    where: { id },
+    include: {
+      activeSchedule: {
+        select: { 
+          id: true, 
           name: true,
-          info: true
-        }} },
-        where: { foodTypeId: {in: [1, 2]} }
-      }
+          weekDayOpenTimes: {
+            select: {
+              id: true,
+              weekDay: true,
+              openTime: true
+            }
+          }
+        }
+      },
+      
+    }
+  }
+  if (includeFoods) {
+    ormSearchData.include.foods = {
+      include: { 
+        foodType: { 
+          select: {
+            id: true,
+            name: true,
+            info: true
+          }
+        }
+      },
+      where: { foodTypeId: { in: [1, 2] } }
     } 
   }
   const shop = await prisma.shop.findUnique(ormSearchData)
