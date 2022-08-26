@@ -15,6 +15,12 @@ const foodTypeData = [
   },
 ]
 const foodData = [
+   { 
+    foodTypeId: 1,
+    name: '有機蔬菜涼拌泡麵',
+    price: 100,
+    info: '冰涼新上市！',
+  },
   { 
     foodTypeId: 1,
     name: '有機蔬菜炒泡麵',
@@ -25,7 +31,8 @@ const foodData = [
     foodTypeId: 1,
     name: '輕鬆肉香腸炒泡麵',
     price: 150,
-    info: 'feat. 動福蛋',
+    info: '因為香腸缺貨停售',
+    isSoldOut: true
   },
   { 
     foodTypeId: 2,
@@ -73,14 +80,18 @@ const foodData = [
     foodTypeId: 3,
     name: '輕鬆肉香腸',
     price: 30,
-    info: '',
+    info: '因為香腸缺貨停售',
+    isSoldOut: true
   }
 ]
 const shopData = {
-  name: 'Ohiyo 樂屋',
-  address: '',
+  name: 'OHIYO 樂屋',
+  address: '261宜蘭縣頭城鎮濱海路二段332巷',
   info: '海邊的好吃炒泡麵',
   phone: '0988870526',
+  foodTypes: {
+    create: foodTypeData
+  },
   schedules : {
     create: {
       name: 'schedule1', 
@@ -116,7 +127,7 @@ async function seedHandler ({data, tableName}) {
   console.log(`Seeding finished.`)
 }
 async function main() {
-  await seedHandler({ data:foodTypeData, tableName: 'foodType' })
+  // await seedHandler({ data:foodTypeData, tableName: 'foodType' })
   await seedHandler({ data:shopData, tableName: 'shop' })
 }
 

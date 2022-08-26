@@ -18,6 +18,7 @@ model Shop {
   activeSchedule Schedule?  @relation("Active")
   admins         Admin[]
   users          User[]
+  foodTypes      FoodType[]
   foods          Food[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -109,6 +110,8 @@ model FoodType {
   name      String
   info      String?
   foods     Food[]
+  shop      Shop      @relation(fields: [shopId], references: [id])
+  shopId    Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
