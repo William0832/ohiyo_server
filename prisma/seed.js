@@ -76,10 +76,39 @@ const foodData = [
     info: '',
   }
 ]
+const shopData = {
+  name: 'Ohiyo 樂屋',
+  address: '',
+  info: '海邊的好吃炒泡麵',
+  phone: '0988870526',
+  schedules : {
+    create: {
+      name: 'schedule1', 
+      activeShopId: 1,
+      weekDayOpenTime: {
+        create: [
+          { weekDay: 6, openTime: '11:00-14:00' },
+          { weekDay: 0, openTime: '11:00-14:00' }
+        ]
+      }
+    }
+  },
+  admins: {
+    create: {
+      account: "William",
+      psw: "5566"
+    }
+  },
+  foods: {
+    create: foodData
+  }
+}
+
 
 
 async function seedHandler ({data, tableName}) {
   console.log(`Start seeding ...`)
+  data = Array.isArray(data) ? data : [data]
   for (const e of data) {
     const item = await prisma[tableName].create({ data: e })
     console.log(`Created ${tableName} with id: ${item.id}`)
@@ -88,7 +117,7 @@ async function seedHandler ({data, tableName}) {
 }
 async function main() {
   await seedHandler({ data:foodTypeData, tableName: 'foodType' })
-  await seedHandler({ data:foodData, tableName: 'food' })
+  await seedHandler({ data:shopData, tableName: 'shop' })
 }
 
 main()

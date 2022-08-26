@@ -7,42 +7,101 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model Shop {
+  id             Int        @id @default(autoincrement())
+  name           String
+  info           String?
+  address        String?
+  phone          String?
+  openStatus     String     @default("bySchedule") //open, bySchedule, close
+  schedules      Schedule[] @relation("Create")
+  activeSchedule Schedule?  @relation("Active")
+  admins         Admin[]
+  users          User[]
+  foods          Food[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  deletedAt      DateTime?
+}
+
+model Admin {
+  id        Int       @id @default(autoincrement())
+  account   String
+  psw       String
+  shop      Shop      @relation(fields: [shopId], references: [id])
+  shopId    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Schedule {
+  id              Int               @id @default(autoincrement())
+  name            String?
+  createdShop     Shop              @relation("Create", fields: [createdShopId], references: [id])
+  createdShopId   Int
+  activeShop      Shop?             @relation("Active", fields: [activeShopId], references: [id])
+  activeShopId    Int?              @unique
+  weekDayOpenTime WeekDayOpneTime[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
+}
+
+model WeekDayOpneTime {
+  id         Int       @id @default(autoincrement())
+  weekDay    Int //0123456
+  openTime   String
+  schedule   Schedule  @relation(fields: [scheduleId], references: [id])
+  scheduleId Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   name      String
   lineId    String
   phone     String
   orders    Order[]
+  shop      Shop      @relation(fields: [shopId], references: [id])
+  shopId    Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  totalPrice Int
-  status     String      @default("pendingPay") // pendingPay paied completed cancle
-  orderFoods OrderFood[]
-  owner      User?       @relation(fields: [ownerId], references: [id])
-  ownerId    Int?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  deletedAt  DateTime?
+  id          Int         @id @default(autoincrement())
+  totalPrice  Int
+  status      String      @default("pendingPay") // pendingPay paied completed cancle
+  special     String?
+  orderFoods  OrderFood[]
+  owner       User?       @relation(fields: [ownerId], references: [id])
+  ownerId     Int?
+  bookingDate String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
 }
 
 model OrderFood {
-  id           Int     @id @default(autoincrement())
-  food         Food    @relation(fields: [foodId], references: [id])
+  id           Int       @id @default(autoincrement())
+  food         Food      @relation(fields: [foodId], references: [id])
   foodId       Int
   special      String?
   spicyLevel   String?
   addItems     String?
-  amount       Int     @default(0)
-  discount     Int     @default(0)
-  addItemPrice Int     @default(0)
-  totalPrice   Int     @default(0) // amount * (food's price + addItemPrice) - discount
-  order        Order?  @relation(fields: [orderId], references: [id])
+  amount       Int       @default(0)
+  discount     Int       @default(0)
+  addItemPrice Int       @default(0)
+  totalPrice   Int       @default(0) // amount * (food's price + addItemPrice) - discount
+  order        Order?    @relation(fields: [orderId], references: [id])
   orderId      Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
 }
 
 model FoodType {
@@ -65,6 +124,8 @@ model Food {
   isSoldOut  Boolean     @default(false)
   img        Img?        @relation(fields: [imgId], references: [id])
   imgId      Int?
+  shop       Shop        @relation(fields: [shopId], references: [id])
+  shopId     Int
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   deletedAt  DateTime?
@@ -74,8 +135,8 @@ model Food {
 model Img {
   id        Int       @id @default(autoincrement())
   path      String
+  Food      Food[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  Food      Food[]
 }
