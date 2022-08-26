@@ -7,8 +7,8 @@ const _api = (api, opts, done) => {
     }) 
     api.get('/shops/:id', async (req, res) => {
       const { id } = req.params
-      const { includeFoods } = req.query
-      const shop = await shopDbService.fetchShop(+id, includeFoods === 'true')
+      // const { includeFoods } = req.query
+      const shop = await shopDbService.fetchShop(+id)
       return { 
         success: true,
         data: { shop },
