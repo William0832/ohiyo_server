@@ -17,13 +17,18 @@ const _api = (api, opts, done) => {
     // create
     api.post('/orders', async (req, res) => {
       try {
-        const { cart, customer } = req.body
+        const { cart, customer, shopId } = req.body
         if(customer == null || customer.lineId == null || cart ==null ) throw new Error(
           'Missing cart or customer data'
         )
         // user
         const { name: userName, lineId, phone } = customer
-        const userData = { name: userName, lineId, phone }
+        const userData = { 
+          name: userName, 
+          lineId, 
+          phone, 
+          shop: { create: { shopId } } 
+        }
         const user = 
           await userDbService.fetchUser(lineId) || 
           await userDbService.createUser(userData)
