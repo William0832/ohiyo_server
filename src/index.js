@@ -36,7 +36,7 @@ app.register(food, { prefix: '/api' })
 //   return data
 // }
 
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 app.listen({ port }, (err, address) => {
   if (err) console.error(err)
   console.log('server listening on', address)

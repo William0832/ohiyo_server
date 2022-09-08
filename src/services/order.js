@@ -3,7 +3,7 @@ const prisma = new PrismaClient()
 const fetchOrders = async (timeType) => {
   console.log(new Date())
   const start = new Date(
-      `${new Date().toLocaleDateString()} 00:00:00`
+    `${new Date().toLocaleDateString()} 00:00:00`
   )
   const end = new Date(
     new Date(new Date().setDate(new Date().getDate() + 1))

@@ -4,7 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "lint": "eslint --fix --ext .js, src",
+    "lint": "eslint --fix --ext .js",
     "start": "node src/index.js",
     "dev": "nodemon --exec 'npm run lint && npm run start '"
   },
