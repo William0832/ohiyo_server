@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "prisma generate",
-    "lint": "eslint --fix --ext .js",
+    "lint": "eslint --fix --ext */*.js",
     "start": "node src/index.js",
     "dev": "nodemon --exec 'npm run lint && npm run start '"
   },

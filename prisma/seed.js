@@ -115,7 +115,7 @@ const shopData = {
   }
 }
 
-async function seedHandler({ data, tableName }) {
+async function seedHandler ({ data, tableName }) {
   console.log('Start seeding ...')
   data = Array.isArray(data) ? data : [data]
   for (const e of data) {
@@ -124,7 +124,7 @@ async function seedHandler({ data, tableName }) {
   }
   console.log('Seeding finished.')
 }
-async function main() {
+async function main () {
   // await seedHandler({ data:foodTypeData, tableName: 'foodType' })
   await seedHandler({ data: shopData, tableName: 'shop' })
 }
