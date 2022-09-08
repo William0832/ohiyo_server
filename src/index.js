@@ -15,7 +15,8 @@ const logger = {
 }
 const app = fastify({ logger })
 app.register(cors, {
-  origin: process.env.CLIENT_URL,
+  origin: true,
+  // origin: process.env.CLIENT_URL,
   credentials: true
 })
 // app.register(sensible)
