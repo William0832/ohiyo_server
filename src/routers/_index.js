@@ -3,7 +3,7 @@ import shop from './shop.js'
 import order from './order.js'
 import food from './food.js'
 
-export  {
+export {
   shop,
   user,
   order,

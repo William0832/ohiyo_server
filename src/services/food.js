@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-
 const fetchFoodsByTypes = async (shopId) => {
   const foodTypes = await prisma.foodType.findMany({
     where: { shopId },
@@ -14,8 +13,8 @@ const fetchFoodsByTypes = async (shopId) => {
 }
 
 const fetchFoodsByTypeId = async (shopId, foodTypeId) => {
- const foods = await prisma.food.findMany({
-    where: { shopId,  foodTypeId },
+  const foods = await prisma.food.findMany({
+    where: { shopId, foodTypeId },
     include: {
       foodType: true
     }
@@ -26,7 +25,7 @@ const fetchFoodsByTypeId = async (shopId, foodTypeId) => {
 
 const fetchFood = async (shopId, foodId) => {
   const food = await prisma.food.findFirst({
-    where: { shopId, id:  foodId },
+    where: { shopId, id: foodId },
     include: {
       foodType: true
     }
