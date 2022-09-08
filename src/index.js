@@ -22,6 +22,7 @@ app.register(cors, {
 
 // const prisma = new PrismaClient()
 app.get('/', async (req, res) => {
+  console.log('!!!!!!!')
   return { message: 'success' }
 })
 
