@@ -1,4 +1,4 @@
-// import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 import fastify from 'fastify'
 import cors from '@fastify/cors'
@@ -21,9 +21,11 @@ app.register(cors, {
 })
 // app.register(sensible)
 
-// const prisma = new PrismaClient()
+const prisma = new PrismaClient()
+await prisma.$connect()
+console.log('connect DB success')
+
 app.get('/', async (req, res) => {
-  console.log('!!!!!!!')
   return { message: 'success' }
 })
 
@@ -33,7 +35,6 @@ app.register(user, { prefix: '/api' })
 app.register(food, { prefix: '/api' })
 
 const port = process.env.PORT || 5000
-console.log({ port })
 app.listen({ port }, (err, address) => {
   if (err) console.error(err)
   console.log('server listening on', address)
