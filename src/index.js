@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client'
-
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { shop, order, food, user } from './routers/_index.js'
 // import sensible from "@fastify/sensible"
 
 import dotenv from 'dotenv'
+import colors from 'colors'
+colors.enable()
 
 dotenv.config()
 const logger = {
@@ -20,11 +20,6 @@ app.register(cors, {
   // credentials: true
 })
 // app.register(sensible)
-
-const prisma = new PrismaClient()
-await prisma.$connect()
-console.log('connect DB success')
-
 app.get('/', async (req, res) => {
   return { message: 'success' }
 })
