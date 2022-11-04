@@ -75,17 +75,18 @@ model User {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  totalPrice  Int
-  status      String      @default("pendingPay") // pendingPay paied completed cancle
-  special     String?
-  orderFoods  OrderFood[]
-  owner       User?       @relation(fields: [ownerId], references: [id])
-  ownerId     Int?
-  bookingDate String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  deletedAt   DateTime?
+  id            Int         @id @default(autoincrement())
+  totalPrice    Int
+  payStatus     String      @default("pending") // pending completed cancle
+  prepareStatus String      @default("pending") // pending confirmed completed cancle
+  special       String?
+  orderFoods    OrderFood[]
+  owner         User?       @relation(fields: [ownerId], references: [id])
+  ownerId       Int?
+  bookingDate   String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
 }
 
 model OrderFood {
