@@ -9,22 +9,11 @@ const _api = (api, opts, done) => {
   // get
   api.get('/orders', async (req, res) => {
     const { timeType } = req.query
-    if (timeType === 'current' || timeType == null) {
-      console.log('current')
-      const orders = await orderDbService.fetchOrders('current')
-      return {
-        success: true,
-        data: { orders },
-        message: 'success'
-      }
-    }
-    if (timeType === 'history') {
-      console.log('history')
-      return {
-        success: true,
-        data: { orders: [] },
-        message: 'success'
-      }
+    const orders = await orderDbService.fetchOrders(timeType)
+    return {
+      success: true,
+      data: { orders },
+      message: 'success'
     }
   })
   // create
@@ -40,7 +29,7 @@ const _api = (api, opts, done) => {
         name: userName,
         lineId,
         phone,
-        shop: { create: { shopId } }
+        shopId
       }
       const user =
         await userDbService.fetchUser(lineId) ||
@@ -51,14 +40,14 @@ const _api = (api, opts, done) => {
         ownerId: user?.id
       }
       const order = await orderDbService.createOrder(orderData)
-      if (order == null) throw new Error('create order fail')
+      if (order == null) throw new Error('create order fail'.red)
       return {
         success: true,
         data: { order },
         message: 'create order success'
       }
     } catch (err) {
-      console.error(err)
+      console.error(err.red)
       throw new Error(err?.message || err)
     }
   })

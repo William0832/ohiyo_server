@@ -1,19 +1,13 @@
 import { PrismaClient } from '@prisma/client'
+import dayjs from 'dayjs'
 const prisma = new PrismaClient()
 const fetchOrders = async (timeType) => {
-  console.log(new Date())
-  const start = new Date(
-    `${new Date().toLocaleDateString()} 00:00:00`
-  )
-  const end = new Date(
-    new Date(new Date().setDate(new Date().getDate() + 1))
-      .toLocaleDateString() + ' 00:00:00'
-  )
-  console.log({ start, end })
+  const now = new Date()
+  const todayStart = new Date(`${dayjs(now).format('YYYY-MM-DD')} 00:00:00`)
   if (timeType === 'current') {
     const orders = await prisma.order.findMany({
       where: {
-        updatedAt: { gte: start }
+        updatedAt: { gte: todayStart }
       },
       include: {
         owner: true,
@@ -24,7 +18,7 @@ const fetchOrders = async (timeType) => {
   }
   const orders = await prisma.order.findMany({
     where: {
-      updatedAt: { lt: start }
+      updatedAt: { lte: todayStart }
     },
     include: {
       owner: true,
@@ -41,7 +35,6 @@ const createOrder = async (payload) => {
   } = payload
   const data = {
     totalPrice,
-    status: 'pendingPay',
     special,
     // bookingDate,
     ownerId,

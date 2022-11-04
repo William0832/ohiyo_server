@@ -4,10 +4,10 @@ const prisma = new PrismaClient()
 const fetchUser = async (lineId) => {
   const user = await prisma.user.findFirst({ where: { lineId } })
   if (user == null) {
-    console.warn('fetchUser fail')
+    console.log('fetchUser fail'.red)
     return
   }
-  console.log('fetchUser success')
+  console.log('fetchUser success'.green)
   return user
 }
 const createUser = async (data) => {
