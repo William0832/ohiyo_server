@@ -33,6 +33,47 @@ const _api = (api, opts, done) => {
       message: 'success'
     }
   })
+  api.post('/shops/:shopId/foods', async (req, res) => {
+    try {
+      const { body } = req
+      const { shopId } = req.params
+      const payload = {
+        shopId,
+        ...body
+      }
+      const food = await foodDbService.createFood(payload)
+      if (!food) throw new Error('create fail')
+      return {
+        success: true,
+        data: { food },
+        message: 'success'
+      }
+    } catch (err) {
+      return {
+        success: false,
+        data: null,
+        message: err
+      }
+    }
+  })
+  api.delete('/shops/:shopId/foods/:foodId',
+    async (req, res) => {
+      try {
+        const { shopId, foodId } = req.params
+        await foodDbService.deleteFood(shopId, foodId)
+        return {
+          success: true,
+          data: null,
+          message: 'success'
+        }
+      } catch (err) {
+        return {
+          success: false,
+          data: null,
+          message: err
+        }
+      }
+    })
   done()
 }
 export default _api

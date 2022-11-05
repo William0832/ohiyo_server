@@ -3,7 +3,7 @@ const prisma = new PrismaClient()
 
 const fetchFoodsByTypes = async (shopId) => {
   const foodTypes = await prisma.foodType.findMany({
-    where: { shopId },
+    where: { shopId, deletedAt: null },
     include: {
       foods: true
     }
@@ -14,7 +14,7 @@ const fetchFoodsByTypes = async (shopId) => {
 
 const fetchFoodsByTypeId = async (shopId, foodTypeId) => {
   const foods = await prisma.food.findMany({
-    where: { shopId, foodTypeId },
+    where: { shopId, foodTypeId, deletedAt: null },
     include: {
       foodType: true
     }
@@ -25,7 +25,7 @@ const fetchFoodsByTypeId = async (shopId, foodTypeId) => {
 
 const fetchFood = async (shopId, foodId) => {
   const food = await prisma.food.findFirst({
-    where: { shopId, id: foodId },
+    where: { shopId, id: foodId, deletedAt: null },
     include: {
       foodType: true
     }
@@ -33,9 +33,48 @@ const fetchFood = async (shopId, foodId) => {
   if (food == null) throw new Error('fetchFood')
   return food
 }
+const createFood = async (payload) => {
+  const {
+    shopId, foodTypeId,
+    name, info, price, isSoldOut, imgId
+  } = payload
+  const food = await prisma.food.findFirst({
+    where: { name }
+  })
+  console.log(payload)
+  console.log(food)
+  if (food) throw new Error(`Food name: "${name}" is repeated.`)
+  const newFood = await prisma.food.create({
+    data: {
+      shopId,
+      foodTypeId: +foodTypeId,
+      name,
+      info,
+      price,
+      isSoldOut,
+      imgId
+    }
+  })
+  console.log(newFood)
+  return newFood
+}
+const deleteFood = async (shopId, foodId) => {
+  const food = prisma.food.update({
+    where: {
+      shopId,
+      foodId
+    },
+    data: {
+      deletedAt: new Date()
+    }
+  })
+  return food
+}
 
 export default {
   fetchFoodsByTypes,
   fetchFoodsByTypeId,
-  fetchFood
+  fetchFood,
+  createFood,
+  deleteFood
 }
