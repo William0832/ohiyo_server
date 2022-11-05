@@ -4,28 +4,27 @@ const prisma = new PrismaClient()
 const fetchOrders = async (timeType) => {
   const now = new Date()
   const todayStart = new Date(`${dayjs(now).format('YYYY-MM-DD')} 00:00:00`)
-  if (timeType === 'current') {
-    const orders = await prisma.order.findMany({
-      where: {
-        updatedAt: { gte: todayStart }
-      },
-      include: {
-        owner: true,
-        orderFoods: true
-      }
-    })
-    return orders
-  }
+  const whereCondition = timeType === 'current'
+    ? { updatedAt: { gte: todayStart }, deletedAt: null }
+    : { updatedAt: { lte: todayStart } }
   const orders = await prisma.order.findMany({
-    where: {
-      updatedAt: { lte: todayStart }
+    where: whereCondition,
+    orderBy: {
+      updatedAt: 'desc'
     },
     include: {
       owner: true,
-      orderFoods: true
+      orderFoods: {
+        include: {
+          food: true
+        }
+      }
     }
   })
   return orders
+}
+const fetchOrder = async (id) => {
+
 }
 const createOrder = async (payload) => {
   const {
@@ -62,6 +61,7 @@ const updateOrderState = () => {
 }
 
 export default {
+  fetchOrder,
   fetchOrders,
   createOrder,
   updateOrderState
