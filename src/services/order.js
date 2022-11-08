@@ -52,7 +52,7 @@ const createOrder = async (payload) => {
       })
     }
   }
-  const order = await prisma.order.create({ data })
+  const order = await prisma.order.create({ data, include: { orderFoods: { food: true } } })
   return order
 }
 
