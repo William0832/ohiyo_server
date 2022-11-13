@@ -13,13 +13,20 @@ const _api = (api, opts, done) => {
       message: 'success'
     }
   })
+
   api.get('/shops/:shopId/foodTypes/:typeId/foods',
     async (req, res) => {
       const { shopId, typeId } = req.params
-      const foods = await foodDbService.fetchFoodsByTypeId(+shopId, +typeId)
+      const { take, skip } = req.query
+      const payload = {
+        ...req.query,
+        take: +take,
+        skip: +skip
+      }
+      const data = await foodDbService.fetchFoodsByTypeId(+shopId, +typeId, payload)
       return {
         success: true,
-        data: { foods },
+        data,
         message: 'success'
       }
     }

@@ -12,22 +12,34 @@ const fetchFoodsByTypes = async (shopId) => {
   return foodTypes
 }
 
-const fetchFoodsByTypeId = async (shopId, foodTypeId) => {
-  const foods = await prisma.food.findMany({
-    where: { shopId, foodTypeId, deletedAt: null },
+const fetchFoodsByTypeId = async (shopId, foodTypeId, query) => {
+  const { take, skip, orderBy, orderType } = query
+  const whereOption = { where: { shopId, foodTypeId, deletedAt: null } }
+  const pageOption = {
+    ...whereOption,
     include: {
       foodType: true
-    }
-  })
+    },
+    orderBy: {
+      [orderBy]: orderType
+    },
+    take,
+    skip
+  }
+  const [total, foods] = await prisma.$transaction([
+    prisma.food.count(whereOption),
+    prisma.food.findMany(pageOption)
+  ])
   if (foods == null) throw new Error('fetchFoodsByTypeId')
-  return foods
+  return { total, foods }
 }
 
 const fetchFood = async (shopId, foodId) => {
   const food = await prisma.food.findFirst({
     where: { shopId, id: foodId, deletedAt: null },
     include: {
-      foodType: true
+      foodType: true,
+      img: true
     }
   })
   if (food == null) throw new Error('fetchFood')
@@ -58,6 +70,8 @@ const createFood = async (payload) => {
   console.log(newFood)
   return newFood
 }
+const updateFood = async (payload) => {
+}
 const deleteFood = async (shopId, foodId) => {
   const food = prisma.food.update({
     where: {
@@ -76,5 +90,6 @@ export default {
   fetchFoodsByTypeId,
   fetchFood,
   createFood,
+  updateFood,
   deleteFood
 }
