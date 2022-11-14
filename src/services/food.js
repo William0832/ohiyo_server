@@ -26,11 +26,12 @@ const fetchFoodsByTypeId = async (shopId, foodTypeId, query) => {
     take,
     skip
   }
-  const [total, foods] = await prisma.$transaction([
+  const [foodType, total, foods] = await prisma.$transaction([
+    prisma.foodType.findFirst({ where: { id: +foodTypeId } }),
     prisma.food.count(whereOption),
     prisma.food.findMany(pageOption)
   ])
-  if (foods == null) throw new Error('fetchFoodsByTypeId')
+  if (foodType == null) throw new Error('no foodType')
   return { total, foods }
 }
 
@@ -53,8 +54,6 @@ const createFood = async (payload) => {
   const food = await prisma.food.findFirst({
     where: { name }
   })
-  console.log(payload)
-  console.log(food)
   if (food) throw new Error(`Food name: "${name}" is repeated.`)
   const newFood = await prisma.food.create({
     data: {
@@ -67,16 +66,35 @@ const createFood = async (payload) => {
       imgId
     }
   })
-  console.log(newFood)
   return newFood
 }
 const updateFood = async (payload) => {
+  const {
+    foodId,
+    name, info, price, isSoldOut, imgId
+  } = payload
+  const food = await prisma.food.update({
+    where: {
+      id: foodId
+    },
+    data: {
+      name, info, price, isSoldOut, imgId
+    }
+  })
+  return food
 }
-const deleteFood = async (shopId, foodId) => {
+const updateColValue = async ({ id, colName, value }) => {
+  return prisma.food.update({
+    where: { id },
+    data: {
+      [colName]: value
+    }
+  })
+}
+const deleteFood = async (foodId) => {
   const food = prisma.food.update({
     where: {
-      shopId,
-      foodId
+      id: foodId
     },
     data: {
       deletedAt: new Date()
@@ -91,5 +109,6 @@ export default {
   fetchFood,
   createFood,
   updateFood,
+  updateColValue,
   deleteFood
 }

@@ -5,44 +5,54 @@ const _api = (api, opts, done) => {
     if (res.sent) return null// stop on error (like user authentication)
   })
   api.get('/shops/:shopId/fetchFoodsByTypes', async (req, res) => {
-    const { shopId } = req.params
-    const foodTypes = await foodDbService.fetchFoodsByTypes(+shopId)
-    return {
-      success: true,
-      data: { foodTypes },
-      message: 'success'
+    try {
+      const { shopId } = req.params
+      const foodTypes = await foodDbService.fetchFoodsByTypes(+shopId)
+      return {
+        success: true,
+        data: { foodTypes },
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
     }
   })
-
-  api.get('/shops/:shopId/foodTypes/:typeId/foods',
-    async (req, res) => {
-      const { shopId, typeId } = req.params
-      const { take, skip } = req.query
-      const payload = {
-        ...req.query,
-        take: +take,
-        skip: +skip
-      }
+  api.get('/shops/:shopId/foodTypes/:typeId/foods', async (req, res) => {
+    const { shopId, typeId } = req.params
+    const { take, skip } = req.query
+    const payload = {
+      ...req.query,
+      take: +take,
+      skip: +skip
+    }
+    try {
       const data = await foodDbService.fetchFoodsByTypeId(+shopId, +typeId, payload)
       return {
         success: true,
         data,
         message: 'success'
       }
+    } catch (err) {
+      res.internalServerError(err.message)
     }
-  )
+  })
   api.get('/shops/:shopId/foods/:foodId', async (req, res) => {
-    const { shopId, foodId } = req.params
-    const food = await foodDbService.fetchFood(+shopId, +foodId)
-    return {
-      success: true,
-      data: { food },
-      message: 'success'
+    try {
+      const { shopId, foodId } = req.params
+      const food = await foodDbService.fetchFood(+shopId, +foodId)
+      return {
+        success: true,
+        data: { food },
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
     }
   })
   api.post('/shops/:shopId/foods', async (req, res) => {
     try {
       const { body } = req
+      if (body.name === '' || body.name == null) throw new Error('need name')
       const { shopId } = req.params
       const payload = {
         shopId,
@@ -56,31 +66,55 @@ const _api = (api, opts, done) => {
         message: 'success'
       }
     } catch (err) {
-      return {
-        success: false,
-        data: null,
-        message: err
-      }
+      res.internalServerError(err.message)
     }
   })
-  api.delete('/shops/:shopId/foods/:foodId',
-    async (req, res) => {
-      try {
-        const { shopId, foodId } = req.params
-        await foodDbService.deleteFood(shopId, foodId)
-        return {
-          success: true,
-          data: null,
-          message: 'success'
-        }
-      } catch (err) {
-        return {
-          success: false,
-          data: null,
-          message: err
-        }
+  api.put('/shops/:shopId/foods/:foodId', async (req, res) => {
+    try {
+      const { body } = req
+      if (body.name === '' || body.name == null) throw new Error('need name')
+      const payload = {
+        ...body,
+        foodId: +req.params.foodId
       }
-    })
+      const food = await foodDbService.updateFood(payload)
+      if (!food) throw new Error('update fail')
+      return {
+        success: true,
+        data: { food },
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
+    }
+  })
+  api.patch('/shops/:shopId/foods/:foodId', async (req, res) => {
+    try {
+      const { colName, value } = req.body
+      const payload = { colName, value, id: +req.params.foodId }
+      const food = await foodDbService.updateColValue(payload)
+      return {
+        success: true,
+        data: { food },
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
+    }
+  })
+  api.delete('/shops/:shopId/foods/:foodId', async (req, res) => {
+    try {
+      const { foodId } = req.params
+      await foodDbService.deleteFood(+foodId)
+      return {
+        success: true,
+        data: null,
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
+    }
+  })
   done()
 }
 export default _api
