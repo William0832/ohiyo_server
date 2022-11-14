@@ -1,7 +1,7 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { shop, order, food, user } from './routers/_index.js'
-// import sensible from "@fastify/sensible"
+import sensible from '@fastify/sensible'
 
 import dotenv from 'dotenv'
 import colors from 'colors'
@@ -19,7 +19,7 @@ app.register(cors, {
   // origin: process.env.CLIENT_URL,
   // credentials: true
 })
-// app.register(sensible)
+app.register(sensible)
 app.get('/', async (req, res) => {
   return { message: 'success' }
 })
