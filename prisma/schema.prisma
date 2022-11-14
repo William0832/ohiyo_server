@@ -109,7 +109,7 @@ model OrderFood {
 
 model FoodType {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique
   info      String?
   foods     Food[]
   shop      Shop      @relation(fields: [shopId], references: [id])
