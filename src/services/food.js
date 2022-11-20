@@ -71,14 +71,17 @@ const createFood = async (payload) => {
 const updateFood = async (payload) => {
   const {
     foodId,
-    name, info, price, isSoldOut, imgId
+    name, info, price, isSoldOut
   } = payload
   const food = await prisma.food.update({
     where: {
       id: foodId
     },
     data: {
-      name, info, price, isSoldOut, imgId
+      name,
+      info,
+      price,
+      isSoldOut
     }
   })
   return food
@@ -102,7 +105,20 @@ const deleteFood = async (foodId) => {
   })
   return food
 }
-
+const updateImg = async ({ foodId, imgId, path }) => {
+  if (imgId) {
+    console.log({ imgId })
+    const img = await prisma.img.update({ where: { id: +imgId }, data: { path } })
+    return await prisma.food.findUnique({ where: { id: +foodId } })
+  }
+  const food = await prisma.food.update({
+    where: { id: +foodId },
+    data: {
+      img: { create: { path } }
+    }
+  })
+  return food
+}
 export default {
   fetchFoodsByTypes,
   fetchFoodsByTypeId,
@@ -110,5 +126,6 @@ export default {
   createFood,
   updateFood,
   updateColValue,
-  deleteFood
+  deleteFood,
+  updateImg
 }

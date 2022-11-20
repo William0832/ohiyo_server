@@ -1,4 +1,6 @@
 import foodDbService from '../services/food.js'
+import { uploadImgs } from '../services/img.js'
+
 const _api = (api, opts, done) => {
   api.addHook('preHandler', async (req, res) => {
     // do something on api routes
@@ -22,8 +24,8 @@ const _api = (api, opts, done) => {
     const { take, skip } = req.query
     const payload = {
       ...req.query,
-      take: +take,
-      skip: +skip
+      take: take ? +take : undefined,
+      skip: skip ? +skip : undefined
     }
     try {
       const data = await foodDbService.fetchFoodsByTypeId(+shopId, +typeId, payload)
@@ -109,6 +111,22 @@ const _api = (api, opts, done) => {
       return {
         success: true,
         data: null,
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
+    }
+  })
+  api.post('/shops/:shopId/foods/:foodId/imgs', async (req, res) => {
+    try {
+      const { foodId } = req.params
+      const { imgId, img } = req.body
+      // const { img } = req.raw.files
+      const { id: imgurId, link: path } = await uploadImgs(img)
+      await foodDbService.updateImg({ foodId, imgId, path })
+      return {
+        success: true,
+        data: { img: path },
         message: 'success'
       }
     } catch (err) {
