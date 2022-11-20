@@ -13,11 +13,16 @@
     "@fastify/cors": "^8.1.0",
     "@fastify/one-line-logger": "^1.0.0",
     "@fastify/sensible": "^5.1.1",
-    "@prisma/client": "^4.5.0",
+    "@prisma/client": "^4.6.0",
     "colors": "^1.4.0",
     "dayjs": "^1.11.6",
     "dotenv": "^16.0.1",
-    "fastify": "4.5.2"
+    "fastify": "^4.10.0",
+    "fastify-file-upload": "^4.0.0",
+    "fastify-socket.io": "^4.0.0",
+    "imgur": "^2.2.0",
+    "socket.io": "^4.5.3",
+    "tslib": "^2.4.1"
   },
   "devDependencies": {
     "eslint": "^8.23.0",
