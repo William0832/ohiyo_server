@@ -127,8 +127,7 @@ model Food {
   info       String?
   price      Int
   isSoldOut  Boolean     @default(false)
-  img        Img?        @relation(fields: [imgId], references: [id])
-  imgId      Int?
+  img        Img?
   shop       Shop        @relation(fields: [shopId], references: [id])
   shopId     Int
   createdAt  DateTime    @default(now())
@@ -139,8 +138,9 @@ model Food {
 
 model Img {
   id        Int       @id @default(autoincrement())
+  food      Food      @relation(fields: [foodId], references: [id])
+  foodId    Int       @unique
   path      String
-  Food      Food[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
