@@ -1,27 +1,40 @@
 import { PrismaClient } from '@prisma/client'
 import dayjs from 'dayjs'
 const prisma = new PrismaClient()
-const fetchOrders = async (timeType) => {
+const fetchOrders = async ({ orderCategory, take, skip, orderBy }) => {
+  orderBy = orderBy || { updatedAt: 'desc' }
   const now = new Date()
   const todayStart = new Date(`${dayjs(now).format('YYYY-MM-DD')} 00:00:00`)
-  const whereCondition = timeType === 'current'
-    ? { updatedAt: { gte: todayStart }, deletedAt: null }
-    : { updatedAt: { lte: todayStart } }
-  const orders = await prisma.order.findMany({
-    where: whereCondition,
-    orderBy: {
-      updatedAt: 'desc'
-    },
-    include: {
-      owner: true,
-      orderFoods: {
-        include: {
-          food: true
+  let where
+  switch (orderCategory) {
+    case 'current':
+      where = { createdAt: { gte: todayStart }, deletedAt: null }
+      break
+    case 'history':
+      where = { createdAt: { lte: todayStart }, deletedAt: null }
+      break
+    case 'remove':
+      where = { deletedAt: { not: null } }
+      break
+  }
+  const [total, orders] = await prisma.$transaction([
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where,
+      take,
+      skip,
+      orderBy,
+      include: {
+        owner: true,
+        orderFoods: {
+          include: {
+            food: true
+          }
         }
       }
-    }
-  })
-  return orders
+    })
+  ])
+  return [total, orders]
 }
 const fetchOrder = async (id) => {
 
@@ -64,13 +77,28 @@ const createOrder = async (payload) => {
   return order
 }
 
-const updateOrderState = () => {
-
+const updateOrderState = async ({ id, key, status }) => {
+  return await prisma.order.update({
+    where: { id },
+    data: {
+      [key]: status
+    }
+  })
+}
+const deleteOrder = async (id) => {
+  const time = new Date()
+  return await prisma.order.update({
+    where: { id },
+    data: {
+      deletedAt: time
+    }
+  })
 }
 
 export default {
   fetchOrder,
   fetchOrders,
   createOrder,
-  updateOrderState
+  updateOrderState,
+  deleteOrder
 }

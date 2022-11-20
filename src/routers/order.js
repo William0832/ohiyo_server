@@ -8,12 +8,24 @@ const _api = (api, opts, done) => {
   })
   // get
   api.get('/orders', async (req, res) => {
-    const { timeType } = req.query
-    const orders = await orderDbService.fetchOrders(timeType)
-    return {
-      success: true,
-      data: { orders },
-      message: 'success'
+    try {
+      const { take, skip, orderBy, orderType } = req.query
+      const payload = {
+        ...req.query,
+        take: take ? +take : undefined,
+        skip: skip ? +skip : undefined,
+        orderBy: {
+          [orderBy]: orderType
+        }
+      }
+      const [total, orders] = await orderDbService.fetchOrders(payload)
+      return {
+        success: true,
+        data: { total, orders },
+        message: 'success'
+      }
+    } catch (err) {
+      res.internalServerError(err.message)
     }
   })
   // create
@@ -48,9 +60,43 @@ const _api = (api, opts, done) => {
       }
     } catch (err) {
       console.error(err.red)
-      throw new Error(err?.message || err)
+      res.internalServerError(err.message)
     }
   })
+  api.patch('/orders/:orderId', async (req, res) => {
+    try {
+      const { orderId } = req.params
+      const { key, status } = req.body
+      const payload = {
+        id: +orderId,
+        key,
+        status
+      }
+      const order = await orderDbService.updateOrderState(payload)
+      return {
+        success: true,
+        data: { order },
+        message: 'update order success'
+      }
+    } catch (err) {
+      console.error(err.red)
+      res.internalServerError(err.message)
+    }
+  })
+  api.delete('/orders/:orderId', async (req, res) => {
+    try {
+      const order = await orderDbService.deleteOrder(+req.params.orderId)
+      return {
+        success: true,
+        data: { order },
+        message: 'update order success'
+      }
+    } catch (err) {
+      console.error(err.red)
+      res.internalServerError(err.message)
+    }
+  })
+
   done()
 }
 export default _api
