@@ -13,7 +13,7 @@
     "@fastify/cors": "^8.1.0",
     "@fastify/one-line-logger": "^1.0.0",
     "@fastify/sensible": "^5.1.1",
-    "@prisma/client": "^4.6.0",
+    "@prisma/client": "^4.16.2",
     "colors": "^1.4.0",
     "dayjs": "^1.11.6",
     "dotenv": "^16.0.1",
@@ -21,6 +21,7 @@
     "fastify-file-upload": "^4.0.0",
     "fastify-socket.io": "^4.0.0",
     "imgur": "^2.2.0",
+    "prisma": "^4.16.2",
     "socket.io": "^4.5.3",
     "tslib": "^2.4.1"
   },
@@ -29,8 +30,7 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.5",
-    "eslint-plugin-promise": "^6.0.1",
-    "prisma": "^4.6.0"
+    "eslint-plugin-promise": "^6.0.1"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
