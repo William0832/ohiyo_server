@@ -114,7 +114,6 @@ const deleteFood = async (foodId) => {
 }
 const updateImg = async ({ foodId, imgId, path }) => {
   if (imgId) {
-    console.log({ imgId })
     const img = await prisma.img.update({ where: { id: +imgId }, data: { path } })
     return await prisma.food.findUnique({ where: { id: +foodId } })
   }
