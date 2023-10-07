@@ -117,8 +117,9 @@ router.delete('/shops/:shopId/foods/:foodId', async (req, res) => {
 router.post('/shops/:shopId/foods/:foodId/imgs', async (req, res) => {
   try {
     const { foodId } = req.params
-    const { imgId, img } = req.body
-    // const { img } = req.raw.files
+    const { imgId } = req.body
+    const { img } = req.files
+    if (!img) throw new Error('Empty img')
     const { id: imgurId, link: path } = await uploadImgs(img)
     await foodDbService.updateImg({ foodId, imgId, path })
     return res.json({
