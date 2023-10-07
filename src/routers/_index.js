@@ -1,11 +1,13 @@
-import user from './user.js'
-import shop from './shop.js'
-import order from './order.js'
-import food from './food.js'
+import userRouter from './user.js'
+import shopRouter from './shop.js'
+import orderRouter from './order.js'
+import foodRouter from './food.js'
 
-export {
-  shop,
-  user,
-  order,
-  food
-}
+import express from 'express'
+const router = express.Router()
+router.use(shopRouter)
+router.use(foodRouter)
+router.use(userRouter)
+router.use(orderRouter)
+
+export default router

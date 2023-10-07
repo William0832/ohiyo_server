@@ -37,11 +37,30 @@ const fetchOrders = async ({ orderCategory, take, skip, orderBy }) => {
   return [total, orders]
 }
 const fetchOrder = async (id) => {
-
+  const order = prisma.order.findFirst({
+    where: { id },
+    include: {
+      orderFoods: {
+        select: {
+          special: true,
+          addItems: true,
+          amount: true,
+          discount: true,
+          spicyLevel: true,
+          totalPrice: true,
+          addItemPrice: true,
+          food: true
+        }
+      },
+      owner: true,
+      shop: true
+    }
+  })
+  return order
 }
 const createOrder = async (payload) => {
   const {
-    items, special,
+    items, special, shopId,
     // bookingDate,
     totalPrice, ownerId
   } = payload
@@ -50,6 +69,7 @@ const createOrder = async (payload) => {
     special,
     // bookingDate,
     ownerId,
+    shopId,
     orderFoods: {
       create: items.map(e => {
         return {
@@ -94,11 +114,19 @@ const deleteOrder = async (id) => {
     }
   })
 }
-
+const fetchOrderHistory = async ({ ownerId, take, cursor }) => {
+  const payload = { take: +take, where: { ownerId: +ownerId } }
+  if (cursor) {
+    payload.skip = 1
+    payload.cursor = { id: cursor }
+  }
+  return await prisma.order.findMany(payload)
+}
 export default {
   fetchOrder,
   fetchOrders,
   createOrder,
   updateOrderState,
-  deleteOrder
+  deleteOrder,
+  fetchOrderHistory
 }

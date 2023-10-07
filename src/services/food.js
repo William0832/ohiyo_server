@@ -5,7 +5,13 @@ const fetchFoodsByTypes = async (shopId) => {
   const foodTypes = await prisma.foodType.findMany({
     where: { shopId, deletedAt: null },
     include: {
-      foods: true
+      foods: {
+        include: {
+          img: {
+            select: { path: true }
+          }
+        }
+      }
     }
   })
   if (foodTypes == null) throw new Error('fetchFoodsByTypes')
@@ -18,7 +24,8 @@ const fetchFoodsByTypeId = async (shopId, foodTypeId, query) => {
   const pageOption = {
     ...whereOption,
     include: {
-      foodType: true
+      foodType: true,
+      img: true
     },
     orderBy: {
       [orderBy]: orderType
