@@ -1,13 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 import dayjs from 'dayjs'
 const prisma = new PrismaClient()
-const fetchOrders = async ({ orderCategory, take, skip, orderBy }) => {
+const fetchOrders = async ({ orderCategory, take, skip, orderBy, food, userName, payStatus, prepareStatus }) => {
   orderBy = orderBy || { updatedAt: 'desc' }
   const now = new Date()
-  const todayStart = new Date(`${dayjs(now).format('YYYY-MM-DD')} 00:00:00`)
+  const todayStart = new Date(`${dayjs(now).format('YYYY-MM-DD')} 00:00`)
   let where
   switch (orderCategory) {
-    case 'current':
+    case 'today':
       where = { createdAt: { gte: todayStart }, deletedAt: null }
       break
     case 'history':
@@ -17,6 +17,35 @@ const fetchOrders = async ({ orderCategory, take, skip, orderBy }) => {
       where = { deletedAt: { not: null } }
       break
   }
+  if (userName !== '') {
+    where.owner = {
+      name: { contains: userName, mode: 'insensitive' }
+    }
+  }
+  if (payStatus !== '') {
+    where.payStatus = payStatus
+  }
+  if (prepareStatus !== '') {
+    where.prepareStatus = prepareStatus
+  }
+  if (food !== '') {
+    const newWhere = {
+      AND: [
+        {
+          OR: food.split(',').map(f => ({
+            orderFoods: {
+              some: { food: { name: { contains: f.slice(), mode: 'insensitive' } } }
+            }
+          }))
+        },
+        {
+          ...where
+        }
+      ]
+    }
+    where = newWhere
+  }
+
   const [total, orders] = await prisma.$transaction([
     prisma.order.count({ where }),
     prisma.order.findMany({
@@ -120,7 +149,7 @@ const fetchOrderHistory = async ({ ownerId, take, cursor }) => {
     payload.skip = 1
     payload.cursor = { id: cursor }
   }
-  return await prisma.order.findMany(payload)
+  return await prisma.order.findMany({ ...payload, include: { orderFoods: { include: { food: true } } } })
 }
 export default {
   fetchOrder,
