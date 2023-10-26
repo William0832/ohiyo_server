@@ -144,7 +144,7 @@ const deleteOrder = async (id) => {
   })
 }
 const fetchOrderHistory = async ({ ownerId, take, cursor }) => {
-  const payload = { take: +take, where: { ownerId: +ownerId } }
+  const payload = { take: +take, where: { ownerId: +ownerId }, orderBy: { updatedAt: 'desc' } }
   if (cursor) {
     payload.skip = 1
     payload.cursor = { id: cursor }
