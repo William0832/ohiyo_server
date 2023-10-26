@@ -69,18 +69,24 @@ router.post('/orders', async (req, res) => {
       message: 'create order success'
     })
   } catch (err) {
-    console.error(err.red)
+    console.error(err.toString().red)
     res.status(500).send(err.message)
   }
 })
 router.patch('/orders/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params
-    const { key, status } = req.body
+    const { key, status, change, receiveMoney } = req.body
     const payload = {
       id: orderId,
       key,
       status
+    }
+    if (change != null) {
+      payload.change = change
+    }
+    if (receiveMoney != null) {
+      payload.receiveMoney = receiveMoney
     }
     const order = await orderDbService.updateOrderState(payload)
     return res.json({
@@ -89,20 +95,22 @@ router.patch('/orders/:orderId', async (req, res) => {
       message: 'update order success'
     })
   } catch (err) {
-    console.error(err.red)
+    console.error(err.toString().red)
     res.status(500).send(err.message)
   }
 })
 router.delete('/orders/:orderId', async (req, res) => {
   try {
     const order = await orderDbService.deleteOrder(req.params.orderId)
+    const { io } = req.app.locals
+    io.emit('MSG', { isRead: false, value: '訂單被刪除', id: order.id, time: new Date() })
     return res.json({
       success: true,
       data: { order },
       message: 'update order success'
     })
   } catch (err) {
-    console.error(err.red)
+    console.error(err.toString().red)
     res.status(500).send(err.message)
   }
 })
@@ -118,7 +126,7 @@ router.post('/orders/history', async (req, res) => {
       message: 'fetch order histories success'
     })
   } catch (err) {
-    console.error(err.red)
+    console.error(err.toString().red)
     res.status(500).send(err.message)
   }
 })

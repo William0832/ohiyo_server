@@ -126,12 +126,20 @@ const createOrder = async (payload) => {
   return order
 }
 
-const updateOrderState = async ({ id, key, status }) => {
+const updateOrderState = async ({ id, key, status, receiveMoney, change }) => {
+  const data = {
+    [key]: status
+  }
+  if (receiveMoney != null) {
+    data.receiveMoney = receiveMoney
+  }
+  if (change != null) {
+    data.change = change
+  }
+  console.log({ data })
   return await prisma.order.update({
     where: { id },
-    data: {
-      [key]: status
-    }
+    data
   })
 }
 const deleteOrder = async (id) => {
