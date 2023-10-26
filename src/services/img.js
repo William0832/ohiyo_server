@@ -13,7 +13,7 @@ export const uploadImgs = async (file) => {
       {
         image: file.data,
         type: 'stream',
-        album: process.env.IMG_ALBUM_ID
+        album: process.env.IMGUR_ALBUM_ID
       }
     )
     const { id, link } = res.data
