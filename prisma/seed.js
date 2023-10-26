@@ -8,7 +8,7 @@ const foodTypeData = [
   },
   {
     name: '飲料',
-    info: '飲料搭配主餐折抵 $10, 續杯半價 '
+    info: ''
   },
   {
     name: '主餐加點'
