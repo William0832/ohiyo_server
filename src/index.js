@@ -7,7 +7,7 @@ import router from './routers/_index.js'
 import http from 'http'
 import dotenv from 'dotenv'
 import colors from 'colors'
-import onSocket from './services/socket.js'
+
 dotenv.config()
 
 const app = express()
@@ -22,7 +22,19 @@ const server = http.createServer(app)
 const io = new Server(server, {
   cors: { origin: '*' }
 })
-io.on('connect', onSocket)
+const EVENT = { MSG: 'MSG' }
+io.on('connect', (socket) => {
+  const { id } = socket
+  console.log(`connect: ${id}`.green)
+
+  socket.on(EVENT.MSG, payload => {
+    console.log('socket.on:', EVENT.MSG, payload)
+    io.emit(EVENT.MSG, payload)
+  })
+  socket.on('DISCONNECT', () => {
+    console.log(`disconnect: ${id}`.red)
+  })
+})
 
 const { PORT } = process.env || 3000
 server.listen(PORT, () => {
