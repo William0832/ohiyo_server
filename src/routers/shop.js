@@ -11,7 +11,7 @@ router.get('/shops/:id', async (req, res) => {
       message: 'success'
     })
   } catch (err) {
-    console.log(err)
+    console.warn(err)
   }
 })
 

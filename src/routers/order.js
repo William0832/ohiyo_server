@@ -27,7 +27,6 @@ router.get('/orders', async (req, res) => {
 router.get('/orders/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params
-    console.log(orderId)
     const order = await orderDbService.fetchOrder(orderId)
     return res.json({
       success: true,
@@ -97,7 +96,6 @@ router.patch('/orders/:orderId', async (req, res) => {
 router.delete('/orders/:orderId', async (req, res) => {
   try {
     const order = await orderDbService.deleteOrder(req.params.orderId)
-    console.log('!!!!', req.params.orderId)
     return res.json({
       success: true,
       data: { order },
