@@ -80,6 +80,8 @@ model Order {
   totalPrice    Int
   payMethod     String      @default("cash")
   payStatus     String      @default("pending") // pending completed cancle
+  receiveMoney  Int         @default(0)
+  change        Int         @default(0)
   prepareStatus String      @default("pending") // pending confirmed completed cancle
   special       String?
   orderFoods    OrderFood[]
