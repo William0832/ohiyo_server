@@ -10,7 +10,7 @@
     "dev": "nodemon --exec 'npm run lint && npm run start '"
   },
   "dependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.5.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.6",
@@ -19,7 +19,6 @@
     "express-fileupload": "^1.4.1",
     "imgur": "^2.2.0",
     "morgan": "^1.10.0",
-    "prisma": "^4.16.2",
     "socket.io": "^4.7.2",
     "tslib": "^2.4.1"
   },
@@ -28,7 +27,8 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.5",
-    "eslint-plugin-promise": "^6.0.1"
+    "eslint-plugin-promise": "^6.0.1",
+    "prisma": "^5.5.2"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
