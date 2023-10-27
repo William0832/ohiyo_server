@@ -103,7 +103,7 @@ router.delete('/orders/:orderId', async (req, res) => {
   try {
     const order = await orderDbService.deleteOrder(req.params.orderId)
     const { io } = req.app.locals
-    io.emit('MSG', { isRead: false, value: '訂單被刪除', id: order.id, time: new Date() })
+    io.emit('MSG', { isRead: false, type: 'delete', value: '訂單被刪除', id: order.id, time: new Date() })
     return res.json({
       success: true,
       data: { order },
