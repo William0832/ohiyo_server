@@ -6,6 +6,7 @@ import router from './routers/_index.js'
 import http from 'http'
 import dotenv from 'dotenv'
 import colors from 'colors'
+import lineBotRouter from './routers/lineBotRouter.js'
 import { createSocketServer } from './services/socket.js'
 dotenv.config()
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(fileUpload())
 app.use('/api', router)
+app.use('/lineWebHook', lineBotRouter)
 
 const server = http.createServer(app)
 

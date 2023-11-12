@@ -10,6 +10,7 @@
     "dev": "nodemon --exec 'npm run lint && npm run start '"
   },
   "dependencies": {
+    "@line/bot-sdk": "^8.0.1",
     "@prisma/client": "^5.5.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
