@@ -6,8 +6,8 @@ import router from './routers/_index.js'
 import http from 'http'
 import dotenv from 'dotenv'
 import colors from 'colors'
-import lineBotRouter from './routers/lineBotRouter.js'
 import { createSocketServer } from './services/socket.js'
+import lineBotRouter from './routers/lineBotRouter.js'
 dotenv.config()
 
 const app = express()

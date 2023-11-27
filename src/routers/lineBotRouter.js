@@ -1,36 +1,44 @@
 import express from 'express'
-import line from '@line/bot-sdk'
+import axios from 'axios'
 const lineBotRouter = express.Router()
 
-const config = {
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.CHANNEL_SECRET
-}
+lineBotRouter.get('', (req, res) =>
+  res.end('I\'m listening. Please access with POST.')
+)
 
-const client = new line.messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
-})
-
-const handleEvent = (e) => {
-  if (e.type !== 'message' || e.message.type !== 'text') {
-    return Promise.resolve(null)
+lineBotRouter.post('', async (req, res) => {
+  try {
+    const { events } = req.body
+    await Promise.all(events.map(e => sendMsg(e)))
+    return res.status(200).json({ success: true })
+  } catch (err) {
+    return res.status(500)
+      .json({ success: false, errorMessage: '500' })
   }
-  const echo = { type: 'text', text: e.message.text }
-  return client.replyMessage({
-    replyToken: e.replyToken,
-    messages: [echo]
-  })
-}
-lineBotRouter.get('', (req, res) => res.end('I\'m listening. Please access with POST.'))
-
-lineBotRouter.post('', line.middleware(config), (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err)
-      res.status(500).end()
-    })
 })
 
 export default lineBotRouter
+
+async function sendMsg (e) {
+  const { replyToken, type, message } = e
+  console.log('msg', { type })
+  if (type !== 'message' || message.type !== 'text') {
+    return Promise.resolve(null)
+  }
+  const payload = {
+    replyToken,
+    messages: [{
+      type: 'text',
+      text: message.text
+    }]
+  }
+  const headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    Authorization: 'Bearer ' + process.env.CHANNEL_ACCESS_TOKEN
+  }
+  const res = await axios.post(
+    'https://api.line.me/v2/bot/message/reply', payload, { headers }
+  )
+  console.log('Send msg status', `${res.status}`.green)
+  return res
+}
